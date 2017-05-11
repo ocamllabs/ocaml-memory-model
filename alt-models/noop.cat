@@ -1,0 +1,24 @@
+include "cos.cat"
+
+(* let ppo = (po-loc & ((W * M) | (M * W))) | (po & ((R & Atm) * M)) | (po & (M * (W & Atm))) *)
+
+(* pres-loc = loc *)
+let pres-loc = loc & ((W * M))
+
+let ppo = po & (
+(*  (R * W) |*)
+  (M * (W & Atm)) |
+  ((R & Atm) * M) |
+  pres-loc)
+
+
+(* putting all of rf into hb doesn't work, even with ppo
+   because of the misattributed MP example *)
+let hb = (ppo | (rf & atomic))+
+show hb
+
+
+acyclic (fr | co | rf | (hb & loc)) as coherence
+
+
+

@@ -1,0 +1,77 @@
+include "cos.cat"
+
+let co-at = co & atomic
+let rf-at = rf & atomic
+let hb = (po | rf-at)+
+
+acyclic (po | rf) as causality
+acyclic (hb | co-at) as sra
+
+
+irreflexive (fr; hb) as CoWR
+irreflexive (co; hb) as CoWW
+irreflexive (co; rf; hb) as CoRW (* careful, RMW *)
+
+
+let corr-hb = hb?; rf-at; hb?
+irreflexive (fr; rf; corr-hb) as CoRR-rf
+(*  irreflexive (fr; rf; hb) as CoRR*)
+
+
+(* 
+  note absence of CoRR:
+  irreflexive (fr; rf; hb) as CoRR
+
+
+coherence rules (with CoRR) are equivalent to:
+acyclic(fr[l]; co[l]; rf[l]; hb)
+kinda like an SC-PER-LOC rule
+
+
+results:
+we have three of the four coherence rules
+
+to get CoRR, we must avoid CSE or store-forwarding
+accross possibly-aliased loads. i.e. loads kill (!),
+and we must also avoid reordering loads.
+
+ppo is looking attractive again :)
+
+
+
+if I add CoRR, then this is pretty much:
+
+  C++
+  with disjoint RA atomics, RLX nonatomics 
+  with the SRA axiom
+  with causality
+
+
+
+
+Do nonatomic variables have liveness?
+There's no point guaranteeing liveness without CoRR
+
+
+
+CoRR affects WRC (message-passing loaded values):
+
+data nonatomic, flag atomic:
+
+    data = 42;
+    |||
+    if (data) flag = true;
+    |||
+    if (flat) print(data)
+
+
+operationally:
+
+
+
+
+*)
+
+
+
+

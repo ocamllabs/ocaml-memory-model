@@ -1,0 +1,23 @@
+include "cos.cat"
+
+let ppo = po \ ((R & Nat) * (R & Nat))
+show ppo
+
+let com = co | rf | fr
+let hb = ((com & atomic) | ppo)+
+
+acyclic(hb | rf) as causality
+acyclic (com | (hb & loc)) as coherence
+
+(*
+Compiling to Power:
+ sync before atomics, ctrlisync after Rat
+
+hb
+= (ppo & nonatomic)+
+  | ppo*; ((com|ppo) & atomic); ppo*
+⊆
+  po | po; 
+
+
+*)

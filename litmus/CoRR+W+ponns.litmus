@@ -1,0 +1,13 @@
+LISA CoRR+W+ponns
+"PodRWNN PodWRNN FreNN RfeNN"
+Prefetch=
+Com=Fr Rf
+Orig=PodRWNN PodWRNN FreNN RfeNN
+{
+}
+ P0        | P1       ;
+ r[n] r0 x | w[n] x 1 ;
+ w[n] y 1  |          ;
+ r[n] r1 x |          ;
+exists
+(0:r0=1 /\ 0:r1=0)

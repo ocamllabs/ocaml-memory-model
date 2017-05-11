@@ -1,0 +1,26 @@
+"OCaml memory model"
+
+enum Atomicity = 'a || 'n
+
+(* FIXME: model RMWs and fences as well *)
+instructions R[{'a,'n}]
+instructions W[{'a,'n}]
+
+(* atomic operations *)
+let Ma = M & A
+let Wa = W & A
+let Ra = R & A
+
+(* nonatomic operations *)
+let Mn = M & N
+let Wn = W & N
+let Rn = R & N
+
+(* the compiler ensures that atomic and nonatomic
+   locations are never mixed up *)
+undefined_unless empty ([Ma]; loc; [Mn] | [Mn]; loc; [Ma])
+
+(* alternative names for some models *)
+let atomic = [A]
+let Atm = A
+let Nat = N

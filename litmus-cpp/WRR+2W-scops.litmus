@@ -1,0 +1,24 @@
+C A
+"PodWWRlxSc WseScSc RfeScSc PodRRScRlx FreRlxRlx"
+Prefetch=0:x=F,0:y=W,2:y=F,2:x=T
+Com=Ws Rf Fr
+Orig=PodWWRlxSc WseScSc RfeScSc PodRRScRlx FreRlxRlx
+
+{}
+
+P0 (atomic_int* y,atomic_int* x) {
+  atomic_store_explicit(x,1,memory_order_relaxed);
+  atomic_store(y,1);
+}
+
+P1 (atomic_int* y) {
+  atomic_store(y,2);
+}
+
+P2 (atomic_int* y,atomic_int* x) {
+  int r0 = atomic_load(y);
+  int r1 = atomic_load_explicit(x,memory_order_relaxed);
+}
+
+exists
+(y=2 /\ 2:r0=2 /\ 2:r1=0)

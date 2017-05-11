@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./run-model $@ | awk '$1=="Test"{name=$2} $1=="Observation" && $3=="Never" {print name}'

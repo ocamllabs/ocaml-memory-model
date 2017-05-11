@@ -1,0 +1,40 @@
+"Java memory model" withoutco
+
+include "cross.cat"
+
+(* This is a fragment of the Java Memory Model.
+
+   It models only integer fields and volatile integer fields.
+
+   Furthermore, it specifies only happens-before consistency.
+
+   well-formed executions?
+
+*)
+
+let first = id \ (po^-1; po) \ [IW]
+let initial-to-first = (IW * M); first
+
+let sobase =
+   [Wa]; rf; [Ra]
+ | [Wa]; co0; [Wa] (* FIXME! *)
+ | [Ma]; po; [Ma]
+with so from linearisations(Ma, sobase)
+
+show so
+
+let sw =
+    [Wa]; so & loc; [Ra]
+  | initial-to-first
+
+show sw
+
+let hb =
+  (po | sw)+
+
+irreflexive(hb)
+
+irreflexive(hb; rf)
+irreflexive(hb; [W]; hb; rf^(-1))
+
+

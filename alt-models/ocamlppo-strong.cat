@@ -1,0 +1,70 @@
+include "cos.cat"
+
+(* compiling this stronger model to POWER requires
+   a lwsync after read-acquire *)
+
+(* WWC + nonatomics uses only rf and R->W po edges,
+   and yet needs lwsync to remove.
+   So, we can't have both rf and RW(po) in hb.
+   Here, I'm trying rf in hb, but RW(po) left out *)
+
+let ppo = po & (
+  (loc & ((W * M) | (M * W))) |
+  (M * (W & Atm)) |
+  ((R & Atm) * M))
+
+(*let hb = (ppo | (rf & atomic))+*)
+let hb = (ppo | rf)+
+show hb
+
+acyclic (po | rf) as causality
+acyclic (hb | co) as sra
+acyclic (fr | co | rf | (hb & loc)) as coherence
+
+
+
+(*
+
+Operationally:
+
+acyclic(ppo | rf | co) is quite strong.
+Pick a linearisation of that as the execution order.
+(ideally, you'd put e.g. ctrlRW in ppo. But that's hard)
+
+Can I always pick the most recent write?
+No, surely SB breaks this? Nope, not in ppo.
+Oh, this is quite nice.
+There is an order < that linearises hb | rf | co.
+Consider < restricted to one location.
+Suppose w₁ < w₂ < r, and w₁ rf r.
+We have w₁ co w₂ by defn of co.
+We need not have w₂ hb r, however.
+So this is consistent with coherence.
+
+
+Can I linearise (fr | co | rf | ppo)? That would be amazing.
+Do I get SRA if I linearise a different ppo?
+
+
+
+
+SB: r₁ < r₂ < w₁ < w₂ is perfectly consistent with hb!
+
+
+
+
+*)
+
+(*
+Compiling to POWER:
+ppo+ ⊆ lwsync ∪ po-loc
+WW(ppo+) ⊆ WW(lwsync) ∪ WW(po-loc) ⊆ prop ∪ co
+so sra holds
+
+hb ∩ loc = (ppo ∪ rfe)+ ∩ loc
+RW(ppo+) ⊆ RW(lwsync) ∪ RW(po-loc) ⊆ fence ∪ ppo ⊆ hb
+
+… seems sane?
+coq should be able to do this sort of thing more nicely…
+
+*)

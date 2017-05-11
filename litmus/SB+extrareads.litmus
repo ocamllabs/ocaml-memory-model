@@ -1,0 +1,13 @@
+LISA SB+extrareads
+"PosWRAA PodRRAA FreAA PosWRAA PodRRAA FreAA"
+Prefetch=0:x=F,0:y=T,1:y=F,1:x=T
+Com=Fr Fr
+Orig=PosWRAA PodRRAA FreAA PosWRAA PodRRAA FreAA
+{
+}
+ P0        | P1        ;
+ w[a] x 1  | w[a] y 1  ;
+ r[a] r0 x | r[a] r0 y ;
+ r[a] r1 y | r[a] r1 x ;
+exists
+(0:r1=0 /\ 1:r1=0)

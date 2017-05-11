@@ -1,0 +1,12 @@
+LISA R-ocaml
+"PodWWNA WseAA PodWRAN FreNN"
+Prefetch=0:x=F,0:y=W,1:y=F,1:x=T
+Com=Ws Fr
+Orig=PodWWNA WseAA PodWRAN FreNN
+{
+}
+ P0       | P1        ;
+ w[n] x 1 | w[a] y 2  ;
+ w[a] y 1 | r[n] r0 x ;
+exists
+(y=2 /\ 1:r0=0)

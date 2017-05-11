@@ -1,0 +1,17 @@
+include "cos.cat"
+
+let co-at = co & atomic
+let rf-at = rf & atomic
+let hb = (po | rf-at)+
+
+acyclic (po | rf) as causality
+acyclic (hb | co-at) as sra
+
+(*
+irreflexive (fr; hb) as CoWR
+irreflexive (co; hb) as CoWW
+irreflexive (co; rf; hb) as CoRW (* careful, RMW *)
+irreflexive (fr; rf; hb) as CoRR
+*)
+
+acyclic(fr | co | rf | (hb & loc)) as coherence

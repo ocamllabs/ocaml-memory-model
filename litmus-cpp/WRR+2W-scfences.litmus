@@ -1,0 +1,26 @@
+C A
+"FenceScdWWRlxRlx WseRlxRlx RfeRlxRlx FenceScdRRRlxRlx FreRlxRlx"
+Prefetch=0:x=F,0:y=W,2:y=F,2:x=T
+Com=Ws Rf Fr
+Orig=FenceScdWWRlxRlx WseRlxRlx RfeRlxRlx FenceScdRRRlxRlx FreRlxRlx
+
+{}
+
+P0 (atomic_int* y,atomic_int* x) {
+  atomic_store_explicit(x,1,memory_order_relaxed);
+  atomic_thread_fence(memory_order_seq_cst);
+  atomic_store_explicit(y,1,memory_order_relaxed);
+}
+
+P1 (atomic_int* y) {
+  atomic_store_explicit(y,2,memory_order_relaxed);
+}
+
+P2 (atomic_int* y,atomic_int* x) {
+  int r0 = atomic_load_explicit(y,memory_order_relaxed);
+  atomic_thread_fence(memory_order_seq_cst);
+  int r1 = atomic_load_explicit(x,memory_order_relaxed);
+}
+
+exists
+(y=2 /\ 2:r0=2 /\ 2:r1=0)

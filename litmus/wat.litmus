@@ -1,0 +1,12 @@
+LISA wat
+"PosRWNN RfeNN"
+Prefetch=
+Com=Rf
+Orig=PosRWNN RfeNN
+{
+}
+ P0        ;
+ r[n] r0 x ;
+ w[n] x 1  ;
+exists
+(0:r0=1)

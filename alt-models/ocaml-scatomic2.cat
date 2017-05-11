@@ -1,0 +1,50 @@
+include "cos.cat"
+
+let ppo = po & (
+  (R * W) |
+  (loc & (W * M)) |
+  (M * (Atm)) |
+  ((Atm) * M))
+
+show ppo
+
+let com = co | rf | fr
+let hb = ((com & atomic) | ppo)+
+show hb
+
+acyclic (hb | rf) as causality
+acyclic (com | (hb & loc)) as coherence
+
+(*
+
+how can something happen-before a nonatomic read?
+by being a write to the same location
+
+ooh, this HB-orders independent writes:
+
+W x; R x; W z
+
+I can use an atomic operation to HB-order independent reads:
+
+R z; fence(); R x
+
+Suppose I re-read every NA write.
+That means hb orders writes.
+
+
+
+
+*)
+
+(*
+Compiling to Power:
+ sync before atomics, ctrlisync after Rat
+
+hb
+= (ppo & nonatomic)+
+  | ppo*; ((com|ppo) & atomic); ppo*
+⊆
+  po | po; 
+
+
+*)

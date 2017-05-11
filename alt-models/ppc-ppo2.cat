@@ -1,0 +1,30 @@
+(* I think this is equivalent to herd's ppo.cat *)
+
+let rec ii = (ii0 | ic0; cc*; ci0)+
+and cc = (cc0 | ci0; ii*; ic0)+
+
+
+let rec ii = (ii0 | ic0; (cc0 | ci0; ii?; ic0)*; ci0)+
+(* This looks CFG-like, sadly. ic0/ci0 are well-bracketed *)
+(* But Wait! ic0 = 0, always! *)
+
+
+
+
+
+(*
+
+S → a | b; T; c
+T → d | e; S; f
+
+*)
+
+
+let cc = (cc0 | ci0; ii*; ic0)+
+let ic = ii*; (ic0 | ii | cc); cc*
+
+
+let ppo =
+  let ppoR = [R]; ii; [R]
+  and ppoW = [R]; ic; [W] in
+  ppoR | ppoW

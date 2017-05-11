@@ -1,0 +1,56 @@
+let rf-at = rf & atomic
+let hb = (po | rf-at)+
+
+let co0 = loc & (IW*(W\IW)|(W\FW)*FW)
+
+let rc = (((hb; (rf^-1)) & loc & (W * W)) \ id) | co0
+show rc
+
+let rc-at = rc & atomic
+
+acyclic (po | rf) as causality
+acyclic (hb | rc-at) as sra
+
+acyclic rc (* CoWR *)
+(* wait, this looks wrong. Surely rc+? *)
+irreflexive (rc; hb) (* CoWW *)
+irreflexive (rc; rf; hb) (* CoRW (check RMW) *)
+
+(* irreflexive(rc; rf; hb; (rf^-1)) -- CoRR *)
+
+
+(* acyclic (po | rf | rc-at)  - I wish! *)
+
+(*
+
+this model's reasonably operational (or at least inductive-over-traces)
+
+by causality, there's a single global trace of all events
+should I take the rc-at ordering or the rf ordering?
+or just make atomics strong enough that it doesn't matter?
+
+take the rf ordering.
+
+so writes are appended to the log, and reads are satisfied from the log
+but!
+when we do a read, we might create coherence edges
+if there was a write that happens-before the read and was not read from
+then we make an rc edge from that write to that read
+and we don't get to do that read if:
+  - the rc edge would make a cycle in (hb | rc[l] | rf[l] | fr[l]) (?)
+  - the rc edge would make a cycle in rc-at
+
+rc edges *can* point backwards, though
+e.g. S
+
+
+
+mechanically maintaining hb:
+each processor has a set of events that it can see
+each write carries a set of events
+
+
+
+
+
+*)

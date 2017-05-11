@@ -1,0 +1,22 @@
+C A
+"FreAcqRel RfeRelAR RmwARAR RfeARAcq"
+Prefetch=
+Com=Fr Rf Rf
+Orig=FreAcqRel RfeRelAR RmwARAR RfeARAcq
+
+{}
+
+P0 (atomic_int* x) {
+  int r0 = atomic_exchange_explicit(x,1,memory_order_acq_rel);
+}
+
+P1 (atomic_int* x) {
+  atomic_store_explicit(x,2,memory_order_release);
+}
+
+P2 (atomic_int* x) {
+  int r2 = atomic_exchange_explicit(x,3,memory_order_acq_rel);
+}
+
+exists
+(x=3 /\ 0:r0=0 /\ 2:r2=1)

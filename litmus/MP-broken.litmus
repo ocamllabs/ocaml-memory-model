@@ -1,0 +1,13 @@
+LISA MP-broken
+"PosWRNN PodRWNN RfeNN PodRWNA PodWRAN FreNN"
+Prefetch=0:x=F,0:y=W,1:y=F,1:x=T
+Com=Rf Fr
+Orig=PosWRNN PodRWNN RfeNN PodRWNA PodWRAN FreNN
+{
+}
+ P0        | P1        ;
+ w[n] x 1  | r[n] r0 y ;
+ r[n] r0 x | w[a] z 1  ;
+ w[n] y 1  | r[n] r1 x ;
+exists
+(1:r0=1 /\ 1:r1=0)

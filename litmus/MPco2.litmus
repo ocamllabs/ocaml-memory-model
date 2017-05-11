@@ -1,0 +1,12 @@
+LISA MPco2
+"PodWWAA WseAA PodWRAA FreAA"
+Prefetch=0:x=F,0:y=W,1:y=F,1:x=T
+Com=Ws Fr
+Orig=PodWWAA WseAA PodWRAA FreAA
+{
+}
+ P0       | P1        ;
+ w[a] x 1 | w[a] y 2  ;
+ w[a] y 1 | r[a] r0 x ;
+exists
+(y=2 /\ 1:r0=0)

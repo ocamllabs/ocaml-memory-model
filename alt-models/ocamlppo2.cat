@@ -1,0 +1,14 @@
+include "cos.cat"
+
+let co-at = co & atomic
+let rf-at = rf & atomic
+
+let ppo = po \ ((R & Nat) * (R & Nat))
+show ppo
+
+let hb = (ppo | rf-at)+
+
+
+acyclic (hb | rf) as causality
+acyclic (hb | co-at) as sra
+acyclic (fr | co | rf | (hb & loc)) as coherence

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+LITMUS='litmus/*.litmus litmus/auto/*.litmus'
+
+herd7 -bell ocaml.bell -model ${1:-ocaml.cat} $LITMUS
