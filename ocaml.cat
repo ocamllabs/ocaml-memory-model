@@ -1,22 +1,22 @@
+(*
+ * Multicore OCaml memory model, from:
+ *
+ * "Bounding Data Races in Space and Time"
+ *   Stephen Dolan, KC Sivaramakrishnan and Anil Madhavapeddy.
+ *   (PLDI 2018)
+ *
+ * Compared to the previous proposal (in ocaml-old.cat), this
+ * model has a simpler hb relation, weaker coherence rules,
+ * and does not include fr on atomics in hb. (There is also
+ * an operational model. See the paper referenced above).
+ *
+ *)
+
 include "cos.cat"
 
-let com = co | rf | fr
+let sync = [Ma]; (co | rf); [Ma]
+let hb = (po | sync)+
 
-let hb = (
-  (* Happens-before between two events to the same
-     location on the same thread, if not both reads *)
-  [W]; (po & loc); [M] |
-  [M]; (po & loc); [W] |
-
-  (* Happens-before between atomic ops and other
-     operations on the same thread *)
-  po; [Ma] |
-  [Ma]; po |
-
-  (* Happens-before between atomic ops to the
-     same location, if not both reads *)
-  [Ma]; com; [Ma]
-)+
-
-acyclic (hb | po | rf) as Causality
-acyclic (com | (hb & loc)) as Coherence
+acyclic (hb | rf | ([Ma]; fr; [Ma])) as Causality
+irreflexive (hb; co) as CoWW
+irreflexive (hb; fr) as CoWR

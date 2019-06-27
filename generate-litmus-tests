@@ -22,6 +22,6 @@ com=$(cross 'Fre Rfe Wse' 'AA NN')
 
 diycross7 -oneloc -bell ../../ocaml.bell $po $com
 diycross7 -oneloc -bell ../../ocaml.bell $com $po $com
-diycross7 -bell ../../ocaml.bell $po $com $po $com
-diycross7 -bell ../../ocaml.bell $com $po $com $po $com
-diycross7 -bell ../../ocaml.bell $po $com $po $com $po $com
+diycross7 -oneloc -bell ../../ocaml.bell $po $com $po $com
+diycross7 -oneloc -bell ../../ocaml.bell $com $po $com $po $com
+diycross7 -oneloc -bell ../../ocaml.bell $po $com $po $com $po $com

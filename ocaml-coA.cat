@@ -1,0 +1,47 @@
+(*
+ * Simplified (but equivalent?) version of the multicore OCaml memory
+ * model, which removes the coherence relation between non-atomic writes.
+ * (Stephen Dolan, Jacques-Henri Jourdan, Glen Mével, François Pottier)
+ *
+ * Instead of assuming a total coherence order between nonatomic writes,
+ * we say that one write is prior to another if there's a read that
+ * happens after the former yet reads from the latter. Then, the coherence
+ * axioms are equivalent to saying "there are no cycles in this priority
+ * relation and happens-before". (We even photographed the whiteboard that
+ * said this, so it must be true :) ).
+ *)
+include "cross.cat"
+
+(* Only generate a coherence relation for atomic writes *)
+with coa from generate_orders(IW|Wa, co0)
+
+let invrf = rf^-1
+let fra = (invrf; coa) \ id
+
+let sync = [Ma]; (coa | rf); [Ma]
+let iwbefore = IW * (M \ IW)
+let hb = (iwbefore | po | sync)+
+
+acyclic (hb | rf | fra) as Causality
+
+let hbloc = hb & loc
+
+let wnprior =
+ (* W1 is prior to W2 on the same location,
+    if W1 happens-before some read that reads from W2 *)
+   (([Wn|IW]; hbloc; [Rn]; invrf; [Wn|IW]) \ id)
+
+ (* Initial writes are prior to other writes *)
+ | ([IW]; loc; [Wn\IW])
+
+ (* Non-final writes are prior to final writes *)
+ | ([Wn\FW]; loc; [FW])
+
+(* This must be "acyclic". irreflexive (hbloc; wnprior) is
+insufficient (see litmust/SBcoh.litmus for a counterexample *)
+
+acyclic (hbloc | wnprior) as Coherence
+
+
+show wnprior
+show coa
